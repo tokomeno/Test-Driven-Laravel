@@ -1,5 +1,7 @@
 <?php
 
+use Tests\TestCase;
+
 use App\Concert;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
