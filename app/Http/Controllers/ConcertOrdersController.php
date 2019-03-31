@@ -21,10 +21,10 @@ class ConcertOrdersController extends Controller
 		$this->validate(request(), [
 			'email' => 'required|email'
 		]);
+		$concert = Concert::published()->findOrFail($concertId);
+
 	try{
 
-
-		$concert = Concert::find($concertId);
 		$ticketQuantity = request('ticket_quantity');
 		$amount = $ticketQuantity * $concert->ticket_price;
 		$token = request('payment_token');
