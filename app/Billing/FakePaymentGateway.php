@@ -22,6 +22,9 @@ class FakePaymentGateway implements PaymentGateway {
 	}
 
 	public function charge($amount, $token){
+		if($token !== $this->getValidTestToken()){
+			throw new PaymentFailException;
+		}
 		$this->charges->push($amount);
 	}
 }

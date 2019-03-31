@@ -20,19 +20,20 @@ class PurchaseTicketsTest extends TestCase
         app()->instance(PaymentGateway::class, $this->paymentGateway);
     }
 
+    private function orderTickets($concert, $params){
+         return $this->json('POST', "/concerts/{$concert->id}/orders", $params);
+    }
+
     /** @test */
     function customer_can_purchase_concert_tickets()
     {
-        
-       
-       
         
         // Create a concert
         $concert = factory(Concert::class)->create(['ticket_price' => 3250]);
 
         // Act
         // Purchase concert tickets
-        $res = $this->json('POST', "/concerts/{$concert->id}/orders", [
+        $res = $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'ticket_quantity' => 3,
             'payment_token' => $this->paymentGateway->getValidTestToken(),
@@ -51,13 +52,36 @@ class PurchaseTicketsTest extends TestCase
 
 
     /** @test */
-    public function email_is_req_for_purchase_tockets()
+    public function order_is_not_created_when_payment_fails()
+    {   
+        $this->withoutExceptionHandling();
+        $concert = factory(Concert::class)->create([
+            'ticket_price' => 3250
+        ]);
+
+        $res = $this->orderTickets($concert,  [
+            'email' => 'john@example.com',
+            'ticket_quantity' => 3,
+            'payment_token' => 'invalid-token'
+        ]);
+    
+        $res->assertStatus(422);
+
+        // Make sure that an order exists for this customer
+        $order = $concert->orders()->where('email', 'john@example.com')->first();
+        $this->assertNull($order);
+
+    }
+
+
+    /** @test */
+    public function email_is_req_for_purchase_tickets()
     {       
          
         // $this->withoutExceptionHandling();
       
         $concert = factory(Concert::class)->create(['ticket_price' => 3250]);
-        $res = $this->json('POST', "/concerts/{$concert->id}/orders", [
+        $res = $this->orderTickets($concert, [
             'ticket_quantity' => 3,
             'payment_token' => $this->paymentGateway->getValidTestToken(),
         ]);
