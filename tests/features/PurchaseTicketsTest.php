@@ -27,7 +27,7 @@ class PurchaseTicketsTest extends TestCase
     /** @test */
     function customer_can_purchase_published_concert_tickets()
     {
-        // $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
         // Create a concert
         $concert = factory(Concert::class)->state('published')->create(['ticket_price' => 3250]);
         $concert->addTickets(3);
@@ -43,7 +43,6 @@ class PurchaseTicketsTest extends TestCase
         
 
         // Assert
-
         $res->assertStatus(201)
             ->assertJson([ 
                 'email' => 'john@example.com',
