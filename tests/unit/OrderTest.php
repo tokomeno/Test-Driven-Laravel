@@ -12,7 +12,23 @@ use Tests\TestCase;
 class OrderTest extends TestCase
 {
 	use DatabaseMigrations;
+    
 
+    /** @test */
+    public function create_an_order_from_tickets_and_email()
+    {
+        $concert = factory(Concert::class)->create([ 'ticket_price' => 1200])->addTickets(5);
+        $this->assertEquals(5, $concert->ticketsRemaining());
+        
+        $order = Order::forTickets($concert->findTickets(3), 'tok@mail.com');
+        
+        $this->assertEquals('tok@mail.com', $order->email);
+        $this->assertEquals(3, $order->ticketQuantity());
+        $this->assertEquals(3600, $order->amount);
+        $this->assertEquals(2, $concert->ticketsRemaining());
+
+
+    }
 
     /** @test */
     public function converting_to_an_array()
