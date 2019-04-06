@@ -14,33 +14,52 @@ class FakePaymentGatewayTest extends TestCase
 {
     use DatabaseMigrations;
 
+    // /** @test */
+    // public function charges_with_valid_payment_token_are_successful()
+    // {
+    //     $paymentGateway = new FakePaymentGateway;
+
+    //     $paymentGateway->charge(2500, $paymentGateway->getValidTestToken());
+
+    //     $this->assertEquals(2500, $paymentGateway->totalCharges());
+    // }
+
+    // /** @test */
+    // public function charges_with_an_ivalid_token_fail()
+    // {
+    // 	// $this->withoutExceptionHandling();
+      
+    //     try {
+    //     	$paymentGateway = new FakePaymentGateway;
+    //     	$paymentGateway->charge(200, 'invalid-token');
+       
+    //     } catch (PaymentFailException $e) {
+    //     	$this->assertTrue(true);
+    //     	return;
+    //     }
+
+    //     $this->fail();
+
+    // }
+
+
     /** @test */
-    public function charges_with_valid_payment_token_are_successful()
+    public function running_a_hook_before_the_first_charge()
     {
         $paymentGateway = new FakePaymentGateway;
+        $callbackRan = false;
 
+        $paymentGateway->beforeFirstCharge(function($paymentGateway) use (&$callbackRan){
+                $this->assertEquals(0,  $paymentGateway->totalCharges());
+                $callbackRan = true;
+        });
+
+        
         $paymentGateway->charge(2500, $paymentGateway->getValidTestToken());
+        $this->assertEquals(2500,  $paymentGateway->totalCharges());
 
-        $this->assertEquals(2500, $paymentGateway->totalCharges());
-    }
-
-    /** @test */
-    public function charges_with_an_ivalid_token_fail()
-    {
-    	// $this->withoutExceptionHandling();
-      
-        try {
-        	$paymentGateway = new FakePaymentGateway;
-        	$paymentGateway->charge(200, 'invalid-token');
-       
-        } catch (PaymentFailException $e) {
-        	$this->assertTrue(true);
-        	return;
-        }
-
-        $this->fail();
-
-
+        $this->assertTrue($callbackRan);
+        
     }
 
 }

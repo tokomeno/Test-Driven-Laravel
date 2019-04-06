@@ -78,6 +78,19 @@ class PurchaseTicketsTest extends TestCase
 
 
     /** @test */
+    public function cannot_purchase_tickets_when_another_custmer_is_tring_to_purchase()
+    {
+        $concert = factory(Concert::class)->states('published')->create()->addTickets(3);
+
+        $this->orderTickets($concert, [
+            'email' => 'person_A@example.com',
+            'ticket_quantity' => 3,
+            'payment_token' => $this->paymentGateway->getValidTestToken(),
+        ]);
+    }
+
+
+    /** @test */
     public function order_is_not_created_when_payment_fails()
     {   
         $this->withoutExceptionHandling();
