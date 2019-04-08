@@ -79,16 +79,18 @@ class PurchaseTicketsTest extends TestCase
     public function cannot_purchase_tickets_when_another_custmer_is_tring_to_purchase()
     {   
         $this->withoutExceptionHandling();
-        $concert = factory(Concert::class)->states('published')->create(['ticket_price' => 12])->addTickets(3);
+        $concert = factory(Concert::class)->states('published')->create(['ticket_price' => 12])->addTickets(5);
         
         // we are givinig a funciton what will be called by 
         // paymentGateway before the charge will occur
         $this->paymentGateway->beforeFirstCharge(function($paymentGateway) use ($concert){
+           $requestA = $this->app['request'];
             $res1 = $this->orderTickets($concert, [
                 'email' => 'person_B@example.com',
-                'ticket_quantity' => 1,
+                'ticket_quantity' => 2,
                 'payment_token' => $this->paymentGateway->getValidTestToken(),
             ]);
+            $this->app['request'] = $requestA ;
             $res1->assertStatus(422);
             $this->assertEquals(0, $concert->orders()->where('orders.email', 'person_B@example.com')->count());
             $this->assertEquals(0, $this->paymentGateway->totalCharges());
@@ -97,13 +99,13 @@ class PurchaseTicketsTest extends TestCase
 
         $res = $this->orderTickets($concert, [
             'email' => 'person_A@example.com',
-            'ticket_quantity' => 3,
+            'ticket_quantity' => 4,
             'payment_token' => $this->paymentGateway->getValidTestToken(),
         ]);
 
         $res->assertStatus(201);
-        $this->assertEquals(36, $this->paymentGateway->totalCharges());
-        $this->assertEquals(1, $concert->orders()->where('email', 'person_A@example.com')->count()); 
+        $this->assertEquals(48, $this->paymentGateway->totalCharges());
+        $this->assertEquals(4, $concert->orders()->where('email', 'person_A@example.com')->count()); 
     }
 
 

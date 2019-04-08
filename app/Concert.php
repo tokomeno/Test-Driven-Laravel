@@ -73,6 +73,12 @@ class Concert extends Model
         return $tickets;
     }
 
+    public function reserveTickets($q){
+        return $this->findTickets($q)->each(function($ticket){
+            $ticket->reserve();
+        });
+    }
+
     public function createOrder($email, $tickets){
        return Order::forTickets($tickets, $email, $tickets->sum('price'));
     }

@@ -55,6 +55,8 @@ $factory->state(App\Concert::class, 'unpublished', function ($faker) {
 
 $factory->define(App\Ticket::class, function (Faker\Generator $faker) {
     return [
-        'concert_id' => factory(App\Concert::class)->create()->id,
+        'concert_id' => function(){
+            return factory(App\Concert::class)->create()->id;
+        }
     ];
 });

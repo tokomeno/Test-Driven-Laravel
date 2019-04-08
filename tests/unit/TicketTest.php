@@ -11,6 +11,21 @@ use Tests\TestCase;
 class TicketTest extends TestCase
 {
 	use DatabaseMigrations;
+    
+    /** @test */
+    public function a_ticket_can_be_reserved()
+    {
+        
+        $ticket = factory('App\Ticket')->create();
+        $this->assertNull($ticket->fresh()->reserved_at);
+
+        $ticket->reserve();
+        
+        $this->assertNotNull($ticket->fresh()->reserved_at);
+
+
+    }
+
     /** @test */
     public function a_ticket_can_be_release()
     {
