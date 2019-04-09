@@ -38,6 +38,27 @@ class ReservationTest extends TestCase
     	$this->assertEquals(3600, $res->totalCost());
     }
 
+     /** @test */
+    public function retraivng_the_reserved_tickets()
+    {
+
+   //   $concert = factory(Concert::class)->create([
+      // 'ticket_price' => 1200
+   //   ])->addTickets(10);
+   //   $tickets = $concert->findTickets(3);
+
+      $tickets = collect([
+      (object) ['price' => 1200],
+      (object) ['price' => 1200],
+      (object) ['price' => 1200],
+      ]);
+
+      $res = new Reservation($tickets);
+
+
+      $this->assertEquals($tickets, $res->tickets());
+    }
+
 
     /** @test */
     public function reserved_tacks_are_releases_when_reservaion_is_calceled()
