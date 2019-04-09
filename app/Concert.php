@@ -78,7 +78,12 @@ class Concert extends Model
             $ticket->reserve();
         });
     }
-
+     public function unReserveTickets($q){
+        return $this->tickets()->take($q)->get()->each(function($ticket){
+            $ticket->update(['reserved_at' => null]);
+        });
+    }
+    
     public function createOrder($email, $tickets){
        return Order::forTickets($tickets, $email, $tickets->sum('price'));
     }
