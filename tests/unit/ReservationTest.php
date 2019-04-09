@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 class ReservationTest extends TestCase
 {
-	// use DatabaseMigrations;
+	use DatabaseMigrations;
     
 
     /** @test */
@@ -117,6 +117,20 @@ class ReservationTest extends TestCase
         // $tickets->map(function($ticket){
         //   $ticket->shouldReceived('release');
         // }); 
+    }
+
+    /** @test */
+    public function complieing_a_reseravtion()
+    {
+        $concert = factory(Concert::class)->create([ 'ticket_price' => 1200])->addTickets(3);
+        $tickets =  $concert->tickets;
+        $reservation = new Reservation($tickets, 'tok@mail.com');    
+       
+        $order = $reservation->complete();
+
+        $this->assertEquals('tok@mail.com', $order->email);
+        $this->assertEquals(3, $order->ticketQuantity());
+        $this->assertEquals(3600, $order->amount);
     }
 
 

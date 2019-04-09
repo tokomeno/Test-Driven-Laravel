@@ -24,16 +24,7 @@ class Order extends Model
         return $order;    
     }
 
-    public static function fromReservation($reservation){
-         $order = self::create([ 
-            'email' => $reservation->email(),
-            'amount' => $reservation->totalCost()
-        ]);
 
-        $order->tickets()->saveMany($reservation->tickets());
-    
-        return $order;   
-    }
 
     public function tickets()
     {
@@ -57,7 +48,20 @@ class Order extends Model
         ];
     }
 
+    
+        
+    // not using anymore
 
+    // public static function fromReservation($reservation){
+    //      $order = self::create([ 
+    //         'email' => $reservation->email(),
+    //         'amount' => $reservation->totalCost()
+    //     ]);
+
+    //     $order->tickets()->saveMany($reservation->tickets());
+    
+    //     return $order;   
+    // }
 
     // public function cancel(){
     //  foreach ($this->tickets as $ticket) {

@@ -33,19 +33,19 @@ class OrderTest extends TestCase
     }
 
     /** @test */
-    public function creatong_a_order_from_reservation()
-    {   
-        $concert = factory(Concert::class)->create([ 'ticket_price' => 1200])->addTickets(3);
-        $tickets =  $concert->tickets;
-        $reservation = new Reservation($tickets, 'tok@mail.com');
+    // public function creatong_a_order_from_reservation()
+    // {   
+    //     $concert = factory(Concert::class)->create([ 'ticket_price' => 1200])->addTickets(3);
+    //     $tickets =  $concert->tickets;
+    //     $reservation = new Reservation($tickets, 'tok@mail.com');
 
 
-        $order = Order::fromReservation($reservation, 'tok@mail.com');
+    //     $order = Order::fromReservation($reservation, 'tok@mail.com');
 
-        $this->assertEquals('tok@mail.com', $order->email);
-        $this->assertEquals(3, $order->ticketQuantity());
-        $this->assertEquals(3600, $order->amount);
-    }
+    //     $this->assertEquals('tok@mail.com', $order->email);
+    //     $this->assertEquals(3, $order->ticketQuantity());
+    //     $this->assertEquals(3600, $order->amount);
+    // }
 
     /** @test */
     public function converting_to_an_array()
