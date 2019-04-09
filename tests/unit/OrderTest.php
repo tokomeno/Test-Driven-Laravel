@@ -47,23 +47,23 @@ class OrderTest extends TestCase
 
 
     /** @test */
-    public function tickets_are_relase_when_an_order_is_cancled()
-    {
-        $concert = factory(Concert::class)->create();
+    // public function tickets_are_relase_when_an_order_is_cancled()
+    // {
+    //     $concert = factory(Concert::class)->create();
 
-        $concert->addTickets(10);
+    //     $concert->addTickets(10);
 
-        $order = $concert->orderTickets('jane@example', 5);
+    //     $order = $concert->orderTickets('jane@example', 5);
 
-        $this->assertEquals(5, $concert->ticketsRemaining());
+    //     $this->assertEquals(5, $concert->ticketsRemaining());
 
-        $order->cancel();
+    //     $order->cancel();
 
-        $this->assertEquals(10, $concert->ticketsRemaining()); 
+    //     $this->assertEquals(10, $concert->ticketsRemaining()); 
     	
 
-    	$this->assertNull(Order::find($order->id));
-    	$this->assertDatabaseMissing('orders', ['id' => $order->id]);
+    // 	$this->assertNull(Order::find($order->id));
+    // 	$this->assertDatabaseMissing('orders', ['id' => $order->id]);
 
-    }
+    // }
 }

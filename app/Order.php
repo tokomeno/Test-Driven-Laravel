@@ -38,18 +38,6 @@ class Order extends Model
     	return $this->belongsTo(Concert::class);
     }
 	
-	public function cancel(){
-		foreach ($this->tickets as $ticket) {
-			$ticket->release();
-		}
-		// $this->tickets()->update(['order_id' => null]);
-
-		$this->delete();
-	}
-
-
-
-
     public function toArray(){
         return [
             'email' => $this->email,
@@ -57,5 +45,16 @@ class Order extends Model
             'amount' => $this->amount
         ];
     }
+
+
+
+    // public function cancel(){
+    //  foreach ($this->tickets as $ticket) {
+    //      $ticket->release();
+    //  }
+    //  // $this->tickets()->update(['order_id' => null]);
+
+    //  $this->delete();
+    // }
 
 }

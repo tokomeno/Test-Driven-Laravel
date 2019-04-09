@@ -13,7 +13,10 @@ class Ticket extends Model
     }
 
     public function release(){
-    	$this->update(['order_id' => null]);
+    	$this->update([
+            // 'order_id' => null, 
+            'reserved_at' => null
+        ]);
     }
 
     public function concert()

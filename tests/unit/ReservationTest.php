@@ -42,19 +42,48 @@ class ReservationTest extends TestCase
     /** @test */
     public function reserved_tacks_are_releases_when_reservaion_is_calceled()
     {
-        $ticket1 = Mockery::mock(Ticket::class);
-        $ticket1->shouldReceive('release')->once();
 
-        $ticket2 = Mockery::mock(Ticket::class);
-        $ticket2->shouldReceive('release')->once();
+      // VERSION ONE
+        // $ticket1 = Mockery::mock(Ticket::class);
+        // $ticket1->shouldReceive('release')->once();
 
-        $ticket3 = Mockery::mock(Ticket::class);
-        $ticket3->shouldReceive('release')->once();
+        // $ticket2 = Mockery::mock(Ticket::class);
+        // $ticket2->shouldReceive('release')->once();
 
-        $tickets = collect([$ticket1, $ticket2, $ticket3]);
+        // $ticket3 = Mockery::mock(Ticket::class);
+        // $ticket3->shouldReceive('release')->once();
+        // $tickets = collect([$ticket1, $ticket2, $ticket3]);
+     
+      // VERSION TWO
+        $tickets = collect([
+          Mockery::mock(Ticket::class, function($mock){
+            $mock->shouldReceive('release')->once();
+          }), 
+          Mockery::mock(Ticket::class)->shouldReceive('release')->once()->getMock(),
+          Mockery::mock(Ticket::class)->shouldReceive('release')->once()->getMock()
+        ]);
 
-        $resevation = new Reservation($tickets);
+         $resevation = new Reservation($tickets);
 
         $resevation->cancel();
+
+
+
+
+//not works
+      // VERSION THEEE
+        //  $tickets = collect([
+        //   Mockery::spy(Ticket::class),
+        //   Mockery::spy(Ticket::class),
+        //   Mockery::spy(Ticket::class)
+        // ]);
+
+        // $resevation = new Reservation($tickets);
+
+        // $resevation->cancel();
+
+        // $tickets->map(function($ticket){
+        //   $ticket->shouldReceived('release');
+        // }); 
     }
 }
