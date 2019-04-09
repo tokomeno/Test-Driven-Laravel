@@ -4,6 +4,8 @@ namespace Tests\Unit;
 
 use App\Concert;
 use App\Order;
+use App\Reservation;
+use App\Ticket; 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -28,6 +30,21 @@ class OrderTest extends TestCase
         $this->assertEquals(2, $concert->ticketsRemaining());
 
 
+    }
+
+    /** @test */
+    public function creatong_a_order_from_reservation()
+    {   
+        $concert = factory(Concert::class)->create([ 'ticket_price' => 1200])->addTickets(3);
+        $tickets =  $concert->tickets;
+        $reservation = new Reservation($tickets, 'tok@mail.com');
+
+
+        $order = Order::fromReservation($reservation, 'tok@mail.com');
+
+        $this->assertEquals('tok@mail.com', $order->email);
+        $this->assertEquals(3, $order->ticketQuantity());
+        $this->assertEquals(3600, $order->amount);
     }
 
     /** @test */
