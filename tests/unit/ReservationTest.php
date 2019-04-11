@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use Mockery;
+use App\Billing\FakePaymentGateway;
 use App\Concert;
 use App\Order;
 use App\Reservation;
@@ -10,6 +10,7 @@ use App\Ticket;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Mockery;
 use Tests\TestCase;
 
 class ReservationTest extends TestCase
@@ -27,9 +28,9 @@ class ReservationTest extends TestCase
    //  	$tickets = $concert->findTickets(3);
 
     	$tickets = collect([
-			(object) ['price' => 1200],
-			(object) ['price' => 1200],
-			(object) ['price' => 1200],
+  			(object) ['price' => 1200],
+  			(object) ['price' => 1200],
+  			(object) ['price' => 1200],
     	]);
 
     	$res = new Reservation($tickets, 'tok@mail.com');
@@ -125,12 +126,16 @@ class ReservationTest extends TestCase
         $concert = factory(Concert::class)->create([ 'ticket_price' => 1200])->addTickets(3);
         $tickets =  $concert->tickets;
         $reservation = new Reservation($tickets, 'tok@mail.com');    
-       
-        $order = $reservation->complete();
+        $pG = new FakePaymentGateway;
+
+
+        $order = $reservation->complete($pG, $pG->getValidTestToken());
 
         $this->assertEquals('tok@mail.com', $order->email);
         $this->assertEquals(3, $order->ticketQuantity());
         $this->assertEquals(3600, $order->amount);
+        $this->assertEquals(3600, $pG->totalCharges());
+
     }
 
 
