@@ -8,6 +8,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+*	@group integration 
+*/
 class StripePaymentGatewayTest extends TestCase
 {
 	 use DatabaseMigrations;
@@ -48,7 +51,6 @@ class StripePaymentGatewayTest extends TestCase
     /** @test */
     public function charges_with_a_valid_payment_token_are_succesfuel()
     {
-    	
   
 		$paymentGateway = new StripePaymentGateway(['api_key' => config('services.stripe.key')]); 
 		
@@ -56,8 +58,6 @@ class StripePaymentGatewayTest extends TestCase
 		$paymentGateway->charge(4500, $this->validToken());
 
         // Create a new charge for some amount using a valid token
-   
-
 		$this->assertCount(1, $this->newCharges());
 		$this->assertEquals(4500, $this->lastCharge()->amount);
     }	
