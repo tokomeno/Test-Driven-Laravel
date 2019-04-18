@@ -13,16 +13,17 @@ use Tests\TestCase;
 class FakePaymentGatewayTest extends TestCase
 {
     use DatabaseMigrations;
-
-    /** @test */
-    public function charges_with_valid_payment_token_are_successful()
+    
+    use PaymentGatewayContractTests;
+  
+    protected function getPaymentGateway()
     {
-        $paymentGateway = new FakePaymentGateway;
-
-        $paymentGateway->charge(2500, $paymentGateway->getValidTestToken());
-
-        $this->assertEquals(2500, $paymentGateway->totalCharges());
+        return new FakePaymentGateway;
     }
+
+
+   
+
 
     /** @test */
     public function charges_with_an_ivalid_token_fail()

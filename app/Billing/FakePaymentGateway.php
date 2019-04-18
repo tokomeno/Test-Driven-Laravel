@@ -13,6 +13,12 @@ class FakePaymentGateway implements PaymentGateway {
 		$this->charges = collect([]);
 	}
 
+	 
+	protected function getPaymentGateway()
+	{
+	    return new StripePaymentGateway(config('services.stripe.secret'));
+	}
+
 
 	public function getValidTestToken(){
 		return 'valid-token';
@@ -38,5 +44,14 @@ class FakePaymentGateway implements PaymentGateway {
 
 	public function beforeFirstCharge($callback){
 		$this->beforeFirstChargeCallback = $callback;
+	}
+
+
+	public function newChargesDuring($callback)
+	{
+		$chargesFrom = $this->charges->count();
+		$callback($this);
+
+		return $this->charges->slice($chargesFrom)->reverse()->values();
 	}
 }
