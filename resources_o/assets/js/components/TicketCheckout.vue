@@ -88,17 +88,23 @@
                 })
             },
             purchaseTickets(token) {
-                this.processing = true
-
-                axios.post(`/concerts/${this.concertId}/orders`, {
+                console.log({
                     email: token.email,
-                    ticket_quantity: this.quantity,
+                    quantity: this.quantity,
                     payment_token: token.id,
-                }).then(response => {
-                    window.location = `/orders/${response.data.confirmation_number}`
-                }).catch(response => {
-                    this.processing = false
                 })
+
+                // this.processing = true
+
+                // axios.post(`/concerts/${this.concertId}/orders`, {
+                //     email: token.email,
+                //     quantity: this.quantity,
+                //     payment_token: token.id,
+                // }).then(response => {
+                //     window.location.href = response.body.url
+                // }).catch(response => {
+                //     this.processing = false
+                // })
             }
         },
         created() {
