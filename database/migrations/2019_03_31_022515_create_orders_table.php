@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
             $table->string('confirmation_number')
             ->unique()
             ->nullable();
+            $table->string('card_last_four')->nullable();
             $table->timestamps();
         });
     }

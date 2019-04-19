@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $guarded = [];
-
+    
+    public static function findByConfirmationNumber($orderConfirmation){
+        return self::where('confirmation_number', $orderConfirmation)->firstOrFail();
+    }
 
     public static function forTickets($tickets, $email, $amount)
     {

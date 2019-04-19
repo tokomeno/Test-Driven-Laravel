@@ -5,7 +5,8 @@ namespace Tests\Unit;
 use App\Concert;
 use App\Order;
 use App\Reservation;
-use App\Ticket; 
+use App\Ticket;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -15,6 +16,29 @@ class OrderTest extends TestCase
 {
 	use DatabaseMigrations;
     
+    /** @test */
+    public function it_can_find_order_by_conffirmaiton_num()
+    {
+        $order = factory('App\Order')->create([
+            'confirmation_number' => 4141242141
+        ]);
+        $foundOrder = Order::findByConfirmationNumber($order->confirmation_number);
+        $this->assertEquals($order->id, $foundOrder->id);
+    }
+
+    /** @test */
+    public function non_existence_order_by_conf_throws_an_exception()
+    {
+        
+        try {
+            Order::findByConfirmationNumber(232321321231);
+        } catch (ModelNotFoundException $e) {
+            $this->assertTrue(true);
+           return;
+        }
+        $this->fail('should thow exception when not found lol');
+         
+    }
 
     /** @test */
     public function create_an_order_from_tickets_and_email()

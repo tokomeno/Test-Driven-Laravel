@@ -10,8 +10,8 @@ class OrderController extends Controller
     public function show($orderConfirmation)
     {
  
-    	$order = Order::where('confirmation_number', $orderConfirmation)->first();
-
+    	$order = Order::findByConfirmationNumber($orderConfirmation);
+  
     	return view('orders.show', compact('order'));
     }	
 }
