@@ -30,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(PaymentGateway::class, StripePaymentGateway::class);
+        $this->app->bind(\App\OrderConfirmationNumberGenerator::class,\App\RandomOrderConfirmationNumberGenerator::class);
     }
 }
