@@ -1,9 +1,11 @@
 <?php
 
 
+// use Mockery;
 use App\Billing\FakePaymentGateway;
 use App\Billing\PaymentGateway;
 use App\Concert;
+use App\OrderConfirmationNumberGenerator;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -29,8 +31,14 @@ class PurchaseTicketsTest extends TestCase
     {
         $this->withoutExceptionHandling();
         // Create a concert
-        $concert = factory(Concert::class)->state('published')->create(['ticket_price' => 3250]);
-        $concert->addTickets(3);
+        $concert = factory(Concert::class)->state('published')->create(['ticket_price' => 3250])->addTickets(3);
+        
+        // $orderConfirmationNumberGenerator->generate();
+        $orderConfirmationNumberGenerator = \Mockery::mock(
+            OrderConfirmationNumberGenerator::class,
+            ['generate' => 'ORDERCONFIRMAION1234' ]
+        );
+        $this->app->instance(OrderConfirmationNumberGenerator::class,  $orderConfirmationNumberGenerator);
 
         // Act
         // Purchase concert tickets
@@ -43,6 +51,7 @@ class PurchaseTicketsTest extends TestCase
         // Assert
         $res->assertStatus(201)
             ->assertJson([ 
+                'confirmation_number' => 'ORDERCONFIRMAION1234',
                 'email' => 'john@example.com',
                 'ticket_quantity' => 3,
                 'amount' => 9750
