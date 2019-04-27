@@ -20,12 +20,6 @@ class Reservation
 		return $this->tickets->sum('price');
 	}
 
-	public function cancel(){
-		foreach ($this->tickets as $ticket) {
-			$ticket->release();
-		}
-	}
-
 	public function tickets(){
 		return $this->tickets;
 	}
@@ -36,10 +30,15 @@ class Reservation
 
 	public function complete($paymentGateway, $paymentToken){
 	
-		$paymentGateway->charge($this->totalCost(), $paymentToken);
-		$order = Order::forTickets($this->tickets(), $this->email, $this->totalCost());
-
+		$charge = $paymentGateway->charge($this->totalCost(), $paymentToken);
+		$order = Order::forTickets($this->tickets(), $this->email, $this->totalCost(), $charge);
 		return $order;
+	}
+
+	public function cancel(){
+		foreach ($this->tickets as $ticket) {
+			$ticket->release();
+		}
 	}
 	
 }
