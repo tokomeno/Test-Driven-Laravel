@@ -14,13 +14,14 @@ class Order extends Model
         return self::where('confirmation_number', $orderConfirmation)->firstOrFail();
     }
 
-    public static function forTickets($tickets, $email, $amount)
+    public static function forTickets($tickets, $email,  $charge)
     {
+        // dd($charge);
         $order = self::create([ 
-            // 'confirmation_number' => app(OrderConfirmationNumberGenerator::class)->generate(),
             'confirmation_number' => OrderConfirmationNumber::generate(),
             'email' => $email,
-            'amount' => $amount
+            'amount' => $charge->amount(),
+            'card_last_four' => $charge->cardLastFour(),
         ]);
 
         foreach($tickets  as $ticket){

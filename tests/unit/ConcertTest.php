@@ -56,14 +56,6 @@ class ConcertTest extends TestCase
         $this->assertFalse($publishedConcerts->contains($unpublishedConcert));
     }
 
-    /** @test */
-    public function can_order_concert_tickets()
-    {
-       $concert = factory(Concert::class)->create();
-       $concert->addTickets(3);
-       $order = $concert->orderTickets('tok@gmail.com', 3);
-       $this->assertEquals(3, $order->tickets()->count());
-    }
 
     /** @test */
     public function can_add_tickets()
@@ -80,20 +72,24 @@ class ConcertTest extends TestCase
     public function tickets_reamingn_does_not_include_ticket_asoc_to_order()
     {
         $concert = factory(Concert::class)->create();
-        $concert->addTickets(50);
-        $order = $concert->orderTickets('tok@gmail.com', 30);
+
+        $concert->tickets()->saveMany(
+            factory('App\Ticket',30)->create(['order_id'=>1])
+        );
+           $concert->tickets()->saveMany(
+            factory('App\Ticket',20)->create(['order_id'=>null])
+        );
 
         //act
         $this->assertEquals(20, $concert->ticketsRemaining());
     }
 
-      /** @test */
-    public function tring_to_purchase_more_tickets_than_remain_throws_an_excaption()
+    //   /** @test */
+    public function tring_to_reserve_more_tickets_than_remain_throws_an_excaption()
     {
-        $concert = factory(Concert::class)->create();
-        $concert->addTickets(10);
+        $concert = factory(Concert::class)->create()->addTickets(10);
        try {
-           $res =  $concert->orderTickets('tok@gmail.com', 30);
+        $reservation = $concert->reserveTickets(30, 'tok@gmail.com');
        } catch (NotEnoughTicketsException $e) {
            $orders = $concert->orders()->where('email', 'tok@gmail.com')->get(); 
             $this->assertEmpty($orders);
@@ -105,22 +101,22 @@ class ConcertTest extends TestCase
 
 
     /** @test */
-    public function cannot_order_tickets_that_have_already_been_purcased()
-    {
-       $concert = factory(Concert::class)->create();
-       $concert->addTickets(8);
-       $concert->orderTickets('zuka@gmail.com', 7);
+    // public function cannot_order_tickets_that_have_already_been_purcased()
+    // {
+    //    $concert = factory(Concert::class)->create();
+    //    $concert->addTickets(8);
+    //    $concert->orderTickets('zuka@gmail.com', 7);
 
-        try {
-            $concert->orderTickets('tok@gmail.com', 3); 
-       } catch (NotEnoughTicketsException $e) {  
-           $tokoOrders =  $concert->orders()->where('email', 'tok@gmail.com')->first();
-           $this->assertNull($tokoOrders);
-           $this->assertEquals(1,  $concert->ticketsRemaining());
-            return;
-       }
-        $this->fail("cannot order tickets_that_have_already_been_purcased");
-    }
+    //     try {
+    //         $concert->orderTickets('tok@gmail.com', 3); 
+    //    } catch (NotEnoughTicketsException $e) {  
+    //        $tokoOrders =  $concert->orders()->where('email', 'tok@gmail.com')->first();
+    //        $this->assertNull($tokoOrders);
+    //        $this->assertEquals(1,  $concert->ticketsRemaining());
+    //         return;
+    //    }
+    //     $this->fail("cannot order tickets_that_have_already_been_purcased");
+    // }
 
 
     /** @test */
@@ -142,9 +138,13 @@ class ConcertTest extends TestCase
     /** @test */
     public function cannot_reserve_tickets_which_was_already_purchased()
     {
-        $concert = factory(Concert::class)->create()->addTickets(3);
+        // $concert = factory(Concert::class)->create()->addTickets(3);
 
-         $concert->orderTickets('tokomeno@mial.com', 2);
+        //  $concert->orderTickets('tokomeno@mial.com', 2);
+
+        $concert = factory(Concert::class)->create()->addTickets(3);
+       $order = factory('App\Order')->create();
+       $order->tickets()->saveMany($concert->tickets->take(2));
 
         try {
           $concert->reserveTickets(2, 'tokomeno@mial.com');

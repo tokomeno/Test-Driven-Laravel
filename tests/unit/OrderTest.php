@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Billing\Charge;
 use App\Concert;
 use App\Order;
 use App\Reservation;
@@ -41,18 +42,21 @@ class OrderTest extends TestCase
     }
 
     /** @test */
-    public function create_an_order_from_tickets_and_email()
+    public function create_an_order_from_tickets_email_and_charge()
     {
-        $concert = factory(Concert::class)->create([ 'ticket_price' => 1200])->addTickets(5);
-        $this->assertEquals(5, $concert->ticketsRemaining());
-      // dd($concert->findTickets(3));
-        $order = Order::forTickets($concert->findTickets(3), 'tok@mail.com', 3600);
-        // dd($order->toArray());/
+        
+        $tickets = factory('App\Ticket', 3)->create();
+        $charge = new Charge([
+            'amount' => 3600,
+            'card_last_four' => 1234
+        ]);
+      
+        $order = Order::forTickets( $tickets, 'tok@mail.com', $charge);
+      
         $this->assertEquals('tok@mail.com', $order->email);
         $this->assertEquals(3, $order->ticketQuantity());
         $this->assertEquals(3600, $order->amount);
-        $this->assertEquals(2, $concert->ticketsRemaining());
-
+        $this->assertEquals('1234', $order->card_last_four);
 
     }
 
