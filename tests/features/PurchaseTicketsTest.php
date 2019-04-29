@@ -5,6 +5,7 @@
 use App\Billing\FakePaymentGateway;
 use App\Billing\PaymentGateway;
 use App\Concert;
+use App\Facades\OrderConfirmationNumber;
 use App\OrderConfirmationNumberGenerator;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -34,12 +35,13 @@ class PurchaseTicketsTest extends TestCase
         $concert = factory(Concert::class)->state('published')->create(['ticket_price' => 3250])->addTickets(3);
         
         // $orderConfirmationNumberGenerator->generate();
-        $orderConfirmationNumberGenerator = \Mockery::mock(
-            OrderConfirmationNumberGenerator::class,
-            ['generate' => 'ORDERCONFIRMAION1234' ]
-        );
-        $this->app->instance(OrderConfirmationNumberGenerator::class,  $orderConfirmationNumberGenerator);
+        // $orderConfirmationNumberGenerator = \Mockery::mock(
+        //     OrderConfirmationNumberGenerator::class,
+        //     ['generate' => 'ORDERCONFIRMAION1234' ]
+        // );
+        // $this->app->instance(OrderConfirmationNumberGenerator::class,  $orderConfirmationNumberGenerator);
 
+        OrderConfirmationNumber::shouldReceive('generate')->andReturn('ORDERCONFIRMAION1234');
         // Act
         // Purchase concert tickets
         $res = $this->orderTickets($concert, [
@@ -54,7 +56,12 @@ class PurchaseTicketsTest extends TestCase
                 'confirmation_number' => 'ORDERCONFIRMAION1234',
                 'email' => 'john@example.com',
                 'ticket_quantity' => 3,
-                'amount' => 9750
+                'amount' => 9750,
+                'tickets' => [
+                    ['code' => 'TICKETCODE1'],
+                    ['code' => 'TICKETCODE2'],
+                    ['code' => 'TICKETCODE3'],
+                ]
             ]);
         // Make sure the customer was charged the correct amount
         $this->assertEquals(9750, $this->paymentGateway->totalCharges());
