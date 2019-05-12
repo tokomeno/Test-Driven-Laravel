@@ -58,6 +58,9 @@ class OrderTest extends TestCase
         $this->assertEquals(3600, $order->amount);
         $this->assertEquals('1234', $order->card_last_four);
 
+        foreach ($order->tickets as $ticket) {
+            $this->assertNotNull($ticket->code);
+        }
     }
 
     /** @test */

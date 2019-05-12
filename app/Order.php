@@ -24,6 +24,7 @@ class Order extends Model
             'card_last_four' => $charge->cardLastFour(),
         ]);
 
+        // $order->tickets()->saveMany($tickets);
         foreach($tickets  as $ticket){
             $order->tickets()->save($ticket);
         }
