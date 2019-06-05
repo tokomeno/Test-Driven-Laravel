@@ -2,20 +2,21 @@
 
 namespace Tests\Unit;
 
-use App\Billing\Charge;
-use App\Concert;
+use Mockery;
 use App\Order;
-use App\Reservation;
 use App\Ticket;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Concert;
 use Tests\TestCase;
+use App\Reservation;
+use App\Billing\Charge;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrderTest extends TestCase
 {
-	use DatabaseMigrations;
+    use DatabaseMigrations;
     
     /** @test */
     public function it_can_find_order_by_conffirmaiton_num()
@@ -30,42 +31,48 @@ class OrderTest extends TestCase
     /** @test */
     public function non_existence_order_by_conf_throws_an_exception()
     {
-        
         try {
             Order::findByConfirmationNumber(232321321231);
         } catch (ModelNotFoundException $e) {
             $this->assertTrue(true);
-           return;
+            return;
         }
         $this->fail('should thow exception when not found lol');
-         
     }
 
     /** @test */
     public function create_an_order_from_tickets_email_and_charge()
     {
-        
-        $tickets = factory('App\Ticket', 3)->create();
         $charge = new Charge([
             'amount' => 3600,
             'card_last_four' => 1234
         ]);
-      
-        $order = Order::forTickets( $tickets, 'tok@mail.com', $charge);
+
+
+        // $tickets = factory('App\Ticket', 3)->create();
+
+        $tickets = collect([
+            Mockery::spy(Ticket::class),
+            Mockery::spy(Ticket::class),
+            Mockery::spy(Ticket::class),
+        ]);
+            
+        $order = Order::forTickets($tickets, 'tok@mail.com', $charge);
       
         $this->assertEquals('tok@mail.com', $order->email);
-        $this->assertEquals(3, $order->ticketQuantity());
+        // $this->assertEquals(3, $order->ticketQuantity());
         $this->assertEquals(3600, $order->amount);
         $this->assertEquals('1234', $order->card_last_four);
 
-        foreach ($order->tickets as $ticket) {
-            $this->assertNotNull($ticket->code);
-        }
+        // foreach ($order->tickets as $ticket) {
+        //     $this->assertNotNull($ticket->code);
+        // }
+        $tickets->each->shouldHaveReceived('claimFor', [$order]);
     }
 
     /** @test */
     // public function creatong_a_order_from_reservation()
-    // {   
+    // {
     //     $concert = factory(Concert::class)->create([ 'ticket_price' => 1200])->addTickets(3);
     //     $tickets =  $concert->tickets;
     //     $reservation = new Reservation($tickets, 'tok@mail.com');
@@ -85,7 +92,7 @@ class OrderTest extends TestCase
         // $order = $concert->orderTickets('jane@example', 5);
 
         $order = factory('App\Order')->create([
-            'email' => 'jane@example', 
+            'email' => 'jane@example',
             'amount' => 6000,
              'confirmation_number' => 'ORDERCONFIRMAI'
         ]);
@@ -94,7 +101,8 @@ class OrderTest extends TestCase
         ]));
         $order->tickets()->save(factory('App\Ticket')->create([
             'code' => 'TICKETCODE2'
-        ]));$order->tickets()->save(factory('App\Ticket')->create([
+        ]));
+        $order->tickets()->save(factory('App\Ticket')->create([
             'code' => 'TICKETCODE3'
         ]));
          
@@ -109,7 +117,7 @@ class OrderTest extends TestCase
                 ['code' => 'TICKETCODE2'],
                 ['code' => 'TICKETCODE3'],
             ]
-        ], $order->toArray()); 
+        ], $order->toArray());
     }
 
 
@@ -126,8 +134,8 @@ class OrderTest extends TestCase
 
     //     $order->cancel();
 
-    //     $this->assertEquals(10, $concert->ticketsRemaining()); 
-    	
+    //     $this->assertEquals(10, $concert->ticketsRemaining());
+        
 
     // 	$this->assertNull(Order::find($order->id));
     // 	$this->assertDatabaseMissing('orders', ['id' => $order->id]);

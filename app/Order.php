@@ -25,9 +25,10 @@ class Order extends Model
         ]);
 
         // $order->tickets()->saveMany($tickets);
-        foreach($tickets  as $ticket){
-            $order->tickets()->save($ticket);
-        }
+        // foreach($tickets  as $ticket){
+        //     $order->tickets()->save($ticket);
+        // }
+        $tickets->each->claimFor($order);
 
         return $order;    
     }
