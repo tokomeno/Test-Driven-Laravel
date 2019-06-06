@@ -13,7 +13,7 @@ class ConcertTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
-    function can_get_formatted_date()
+    public function can_get_formatted_date()
     {
         $concert = factory(Concert::class)->make([
             'date' => Carbon::parse('2016-12-01 8:00pm'),
@@ -23,7 +23,7 @@ class ConcertTest extends TestCase
     }
 
     /** @test */
-    function can_get_formatted_start_time()
+    public function can_get_formatted_start_time()
     {
         $concert = factory(Concert::class)->make([
             'date' => Carbon::parse('2016-12-01 17:00:00'),
@@ -33,7 +33,7 @@ class ConcertTest extends TestCase
     }
 
     /** @test */
-    function can_get_ticket_price_in_dollars()
+    public function can_get_ticket_price_in_dollars()
     {
         $concert = factory(Concert::class)->make([
             'ticket_price' => 6750,
@@ -43,7 +43,7 @@ class ConcertTest extends TestCase
     }
 
     /** @test */
-    function concerts_with_a_published_at_date_are_published()
+    public function concerts_with_a_published_at_date_are_published()
     {
         $publishedConcertA = factory(Concert::class)->create(['published_at' => Carbon::parse('-1 week')]);
         $publishedConcertB = factory(Concert::class)->create(['published_at' => Carbon::parse('-1 week')]);
@@ -74,10 +74,10 @@ class ConcertTest extends TestCase
         $concert = factory(Concert::class)->create();
 
         $concert->tickets()->saveMany(
-            factory('App\Ticket',30)->create(['order_id'=>1])
+            factory('App\Ticket', 30)->create(['order_id'=>1])
         );
-           $concert->tickets()->saveMany(
-            factory('App\Ticket',20)->create(['order_id'=>null])
+        $concert->tickets()->saveMany(
+               factory('App\Ticket', 20)->create(['order_id'=>null])
         );
 
         //act
@@ -88,14 +88,14 @@ class ConcertTest extends TestCase
     public function tring_to_reserve_more_tickets_than_remain_throws_an_excaption()
     {
         $concert = factory(Concert::class)->create()->addTickets(10);
-       try {
-        $reservation = $concert->reserveTickets(30, 'tok@gmail.com');
-       } catch (NotEnoughTicketsException $e) {
-           $orders = $concert->orders()->where('email', 'tok@gmail.com')->get(); 
+        try {
+            $reservation = $concert->reserveTickets(30, 'tok@gmail.com');
+        } catch (NotEnoughTicketsException $e) {
+            $orders = $concert->orders()->where('email', 'tok@gmail.com')->get();
             $this->assertEmpty($orders);
             $this->assertEquals(10, $concert->ticketsRemaining());
-           return;
-       }
+            return;
+        }
         $this->fail("Order Succeced even no more tickets left");
     }
 
@@ -108,8 +108,8 @@ class ConcertTest extends TestCase
     //    $concert->orderTickets('zuka@gmail.com', 7);
 
     //     try {
-    //         $concert->orderTickets('tok@gmail.com', 3); 
-    //    } catch (NotEnoughTicketsException $e) {  
+    //         $concert->orderTickets('tok@gmail.com', 3);
+    //    } catch (NotEnoughTicketsException $e) {
     //        $tokoOrders =  $concert->orders()->where('email', 'tok@gmail.com')->first();
     //        $this->assertNull($tokoOrders);
     //        $this->assertEquals(1,  $concert->ticketsRemaining());
@@ -126,13 +126,12 @@ class ConcertTest extends TestCase
 
         $this->assertEquals(3, $concert->ticketsRemaining());
 
-        $reservation = $concert->reserveTickets(2, 'tok@mail.com'); 
+        $reservation = $concert->reserveTickets(2, 'tok@mail.com');
         
         $this->assertCount(2, $reservation->tickets());
         $this->assertEquals('tok@mail.com', $reservation->email());
 
         $this->assertEquals(1, $concert->ticketsRemaining());
-
     }
       
     /** @test */
@@ -143,35 +142,33 @@ class ConcertTest extends TestCase
         //  $concert->orderTickets('tokomeno@mial.com', 2);
 
         $concert = factory(Concert::class)->create()->addTickets(3);
-       $order = factory('App\Order')->create();
-       $order->tickets()->saveMany($concert->tickets->take(2));
+        $order = factory('App\Order')->create();
+        $order->tickets()->saveMany($concert->tickets->take(2));
 
         try {
-          $concert->reserveTickets(2, 'tokomeno@mial.com');
+            $concert->reserveTickets(2, 'tokomeno@mial.com');
         } catch (NotEnoughTicketsException $e) {
             $this->assertEquals(1, $concert->ticketsRemaining());
             return;
         }
 
         $this->fails('cannot_reserve_tickets_which_was_already_purchased');
-
     }
 
-     /** @test */
+    /** @test */
     public function cannot_reserve_tickets_which_was_already_reserved()
     {
         $concert = factory(Concert::class)->create()->addTickets(3);
 
-         $concert->reserveTickets(2,'tokomeno@mial.com');
+        $concert->reserveTickets(2, 'tokomeno@mial.com');
 
         try {
-          $concert->reserveTickets(2, 'tokomeno@mial.com');
+            $concert->reserveTickets(2, 'tokomeno@mial.com');
         } catch (NotEnoughTicketsException $e) {
             $this->assertEquals(1, $concert->ticketsRemaining());
             return;
         }
 
         $this->fails('cannot_reserve_tickets_which_was_already_reserved');
-
     }
 }

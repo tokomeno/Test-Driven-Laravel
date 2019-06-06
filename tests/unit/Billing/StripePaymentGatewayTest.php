@@ -10,15 +10,15 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
-*	@group integration 
+*	@group integration
 */
 class StripePaymentGatewayTest extends TestCase
 {
-	 // use DatabaseMigrations;
-	 use \PaymentGatewayContractTests;
+    // use DatabaseMigrations;
+    use \PaymentGatewayContractTests;
 
-	protected function getPaymentGateway()
-	{
-	    return new StripePaymentGateway(config('services.stripe.secret'));
-	}
+    protected function getPaymentGateway()
+    {
+        return new StripePaymentGateway(config('services.stripe.secret'));
+    }
 }

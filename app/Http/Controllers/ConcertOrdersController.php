@@ -12,39 +12,37 @@ use Illuminate\Http\Request;
 
 class ConcertOrdersController extends Controller
 {
-	private $paymentGateway;
+    private $paymentGateway;
 
-	public function __construct(PaymentGateway $paymentGateway)
-	{
-		$this->paymentGateway = $paymentGateway;
-	}
+    public function __construct(PaymentGateway $paymentGateway)
+    {
+        $this->paymentGateway = $paymentGateway;
+    }
 
-    public function store($concertId){
-	
-		$this->validate(request(), ['email' => 'required|email']);
-		
-		$concert = Concert::published()->findOrFail($concertId);
+    public function store($concertId)
+    {
+        $this->validate(request(), ['email' => 'required|email']);
+        
+        $concert = Concert::published()->findOrFail($concertId);
 
-		try{
-			
-			$reservation =  $concert->reserveTickets(request('ticket_quantity'), request('email'));
-		 
-			// $this->paymentGateway->charge($reservation->totalCost(), request('payment_token') ); 
+        try {
+            $reservation =  $concert->reserveTickets(request('ticket_quantity'), request('email'));
+         
+            // $this->paymentGateway->charge($reservation->totalCost(), request('payment_token') );
 
-			// $order = Order::forTickets($reservation->tickets(), request('email'), $reservation->totalCost());
-			
-			$order = $reservation->complete($this->paymentGateway, request('payment_token'));
+            // $order = Order::forTickets($reservation->tickets(), request('email'), $reservation->totalCost());
+            
+            $order = $reservation->complete($this->paymentGateway, request('payment_token'));
 
-// dd($order->toArray());
-	    	return response()->json($order->toArray(), 201);
-
+            // dd($order->toArray());
+            return response()->json($order->toArray(), 201);
         } catch (PaymentFailException $e) {
-        		$reservation->cancel();
+            $reservation->cancel();
 
-        		// $concert->unReserveTickets(request('ticket_quantity'));
-               	return response()->json([], 422);
+            // $concert->unReserveTickets(request('ticket_quantity'));
+            return response()->json([], 422);
         } catch (NotEnoughTicketsException $e) {
-               	return response()->json([], 422);
+            return response()->json([], 422);
         }
     }
 }

@@ -9,9 +9,8 @@ class OrderController extends Controller
 {
     public function show($orderConfirmation)
     {
- 
-    	$order = Order::findByConfirmationNumber($orderConfirmation);
+        $order = Order::findByConfirmationNumber($orderConfirmation);
   
-    	return view('orders.show', compact('order'));
-    }	
+        return view('orders.show', compact('order'));
+    }
 }

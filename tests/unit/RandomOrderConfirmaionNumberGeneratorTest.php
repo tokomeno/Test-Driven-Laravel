@@ -10,25 +10,25 @@ use App\RandomOrderConfirmationNumberGenerator;
 
 class RandomOrderConfirmaionNumberGeneratorTest extends TestCase
 {
-	// Can Only contaun uppercase letters and numbers
+    // Can Only contaun uppercase letters and numbers
     
     
     /** @test */
-    function must_be_24_characters_long()
+    public function must_be_24_characters_long()
     {
         $generator = new RandomOrderConfirmationNumberGenerator;
         $confirmationNumber = $generator->generate();
         $this->assertEquals(24, strlen($confirmationNumber));
     }
     /** @test */
-    function can_only_contain_uppercase_letters_and_numbers()
+    public function can_only_contain_uppercase_letters_and_numbers()
     {
         $generator = new RandomOrderConfirmationNumberGenerator;
         $confirmationNumber = $generator->generate();
         $this->assertRegExp('/^[A-Z0-9]+$/', $confirmationNumber);
     }
     /** @test */
-    function cannot_contain_ambiguous_characters()
+    public function cannot_contain_ambiguous_characters()
     {
         $generator = new RandomOrderConfirmationNumberGenerator;
         $confirmationNumber = $generator->generate();
@@ -40,7 +40,7 @@ class RandomOrderConfirmaionNumberGeneratorTest extends TestCase
 
 
     /** @test */
-    function confirmation_numbers_must_be_unique()
+    public function confirmation_numbers_must_be_unique()
     {
         $generator = new RandomOrderConfirmationNumberGenerator;
         $confirmationNumbers = array_map(function ($i) use ($generator) {

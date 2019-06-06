@@ -43,32 +43,28 @@ class HashidsTicketCodeGeneratorTest extends TestCase
         $code2 = $ticketCodeGenerator->generateFor(factory(Ticket::class)->make(['id' => 1]));
         
         $this->assertEquals($code1, $code2);
-  
     }
     
 
-     /** @test */
-     public function ticket_codes_not_same_id_are_not_samenction()
-     {
-         $ticketCodeGenerator = new HashidsTicketCodeGenerator;
+    /** @test */
+    public function ticket_codes_not_same_id_are_not_samenction()
+    {
+        $ticketCodeGenerator = new HashidsTicketCodeGenerator;
  
-         $code1 = $ticketCodeGenerator->generateFor(factory(Ticket::class)->make(['id' => 1]));
-         $code2 = $ticketCodeGenerator->generateFor(factory(Ticket::class)->make(['id' => 2]));
-         $this->assertNotEquals($code1, $code2);
-   
-     }
+        $code1 = $ticketCodeGenerator->generateFor(factory(Ticket::class)->make(['id' => 1]));
+        $code2 = $ticketCodeGenerator->generateFor(factory(Ticket::class)->make(['id' => 2]));
+        $this->assertNotEquals($code1, $code2);
+    }
 
 
-     /** @test */
-     public function ticket_codes_genetated_with_diff()
-     {
-         $ticketCodeGenerator = new HashidsTicketCodeGenerator;
+    /** @test */
+    public function ticket_codes_genetated_with_diff()
+    {
+        $ticketCodeGenerator = new HashidsTicketCodeGenerator;
  
-         $code1 = $ticketCodeGenerator->generateFor(factory(Ticket::class)->make(['id' => 1]));
-         $code2 = $ticketCodeGenerator->generateFor(factory(Ticket::class)->make(['id' => 2]));
+        $code1 = $ticketCodeGenerator->generateFor(factory(Ticket::class)->make(['id' => 1]));
+        $code2 = $ticketCodeGenerator->generateFor(factory(Ticket::class)->make(['id' => 2]));
          
-         $this->assertNotEquals($code1, $code2);
-   
-     }
+        $this->assertNotEquals($code1, $code2);
+    }
 }
-

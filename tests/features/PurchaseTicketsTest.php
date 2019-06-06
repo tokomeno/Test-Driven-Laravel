@@ -17,19 +17,21 @@ class PurchaseTicketsTest extends TestCase
 {
     use DatabaseMigrations;
 
-    protected function setUp(){
+    protected function setUp()
+    {
         parent::setUp();
 
         $this->paymentGateway = new FakePaymentGateway();
         app()->instance(PaymentGateway::class, $this->paymentGateway);
     }
 
-    private function orderTickets($concert, $params){
-         return $this->json('POST', "/concerts/{$concert->id}/orders", $params);
+    private function orderTickets($concert, $params)
+    {
+        return $this->json('POST', "/concerts/{$concert->id}/orders", $params);
     }
 
     /** @test */
-    function customer_can_purchase_published_concert_tickets()
+    public function customer_can_purchase_published_concert_tickets()
     {
         $this->withoutExceptionHandling();
         // Create a concert
@@ -54,7 +56,7 @@ class PurchaseTicketsTest extends TestCase
 
         // Assert
         $res->assertStatus(201)
-            ->assertJson([ 
+            ->assertJson([
                 'confirmation_number' => 'ORDERCONFIRMAION1234',
                 'email' => 'john@example.com',
                 'ticket_quantity' => 3,
@@ -95,14 +97,14 @@ class PurchaseTicketsTest extends TestCase
 
     /** @test */
     public function cannot_purchase_tickets_when_another_custmer_is_tring_to_purchase()
-    {   
+    {
         $this->withoutExceptionHandling();
         $concert = factory(Concert::class)->states('published')->create(['ticket_price' => 12])->addTickets(5);
         
-        // we are givinig a funciton what will be called by 
+        // we are givinig a funciton what will be called by
         // paymentGateway before the charge will occur
-        $this->paymentGateway->beforeFirstCharge(function($paymentGateway) use ($concert){
-           $requestA = $this->app['request'];
+        $this->paymentGateway->beforeFirstCharge(function ($paymentGateway) use ($concert) {
+            $requestA = $this->app['request'];
             $res1 = $this->orderTickets($concert, [
                 'email' => 'person_B@example.com',
                 'ticket_quantity' => 2,
@@ -112,7 +114,6 @@ class PurchaseTicketsTest extends TestCase
             $res1->assertStatus(422);
             $this->assertEquals(0, $concert->orders()->where('orders.email', 'person_B@example.com')->count());
             $this->assertEquals(0, $this->paymentGateway->totalCharges());
-
         });
 
         $res = $this->orderTickets($concert, [
@@ -123,20 +124,20 @@ class PurchaseTicketsTest extends TestCase
 
         $res->assertStatus(201);
         $this->assertEquals(48, $this->paymentGateway->totalCharges());
-        $this->assertEquals(4, $concert->orders()->where('email', 'person_A@example.com')->count()); 
+        $this->assertEquals(4, $concert->orders()->where('email', 'person_A@example.com')->count());
     }
 
 
     /** @test */
     public function order_is_not_created_when_payment_fails()
-    {   
+    {
         $this->withoutExceptionHandling();
         $concert = factory(Concert::class)->state('published')->create([
             'ticket_price' => 3250
         ]);
         $concert->addTickets(4);
 
-        $res = $this->orderTickets($concert,  [
+        $res = $this->orderTickets($concert, [
             'email' => 'john@example.com',
             'ticket_quantity' => 3,
             'payment_token' => 'invalid-token'
@@ -148,13 +149,12 @@ class PurchaseTicketsTest extends TestCase
         $order = $concert->orders()->where('email', 'john@example.com')->first();
         $this->assertNull($order);
         $this->assertEquals(4, $concert->ticketsRemaining());
-
     }
 
 
     /** @test */
     public function email_is_req_for_purchase_tickets()
-    {       
+    {
          
         // $this->withoutExceptionHandling();
       
@@ -171,7 +171,7 @@ class PurchaseTicketsTest extends TestCase
     /** @test */
     public function cannot_purchase_more_tickets_thank_remain()
     {
-           $this->withoutExceptionHandling();
+        $this->withoutExceptionHandling();
         $concert = factory(Concert::class)->state('published')->create();
         $concert->addTickets(50);
 
@@ -187,6 +187,5 @@ class PurchaseTicketsTest extends TestCase
         $this->assertNull($order);
         $this->assertEquals(0, $this->paymentGateway->totalCharges());
         $this->assertEquals(50, $concert->ticketsRemaining());
-
     }
 }

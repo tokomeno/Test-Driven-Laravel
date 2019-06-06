@@ -30,9 +30,10 @@ class Concert extends Model
     {
         return number_format($this->ticket_price / 100, 2);
     }
-    public function orders(){
+    public function orders()
+    {
         // return $this->hasMany(Order::class);
-         return $this->belongsToMany(Order::class, 'tickets');
+        return $this->belongsToMany(Order::class, 'tickets');
     }
 
     public function tickets()
@@ -41,14 +42,16 @@ class Concert extends Model
     }
 
    
-    public function addTickets($q){
+    public function addTickets($q)
+    {
         foreach (range(1, $q) as $i) {
             $this->tickets()->create([]);
         }
         return $this;
     }
 
-    public function ticketsRemaining(){
+    public function ticketsRemaining()
+    {
         return $this->tickets()
                 ->available()
                 ->count();
@@ -59,20 +62,22 @@ class Concert extends Model
         $tickets = $this->tickets()->available()
             ->take($quantity)
             ->get();
-        if($tickets->count() < $quantity){
+        if ($tickets->count() < $quantity) {
             throw new NotEnoughTicketsException;
         }
         return $tickets;
     }
 
-    public function reserveTickets($q, $email){
-        $tickets = $this->findTickets($q)->each(function($ticket){
+    public function reserveTickets($q, $email)
+    {
+        $tickets = $this->findTickets($q)->each(function ($ticket) {
             $ticket->reserve();
         });
         return new Reservation($tickets, $email);
     }
-     public function unReserveTickets($q){
-        return $this->tickets()->take($q)->get()->each(function($ticket){
+    public function unReserveTickets($q)
+    {
+        return $this->tickets()->take($q)->get()->each(function ($ticket) {
             $ticket->update(['reserved_at' => null]);
         });
     }

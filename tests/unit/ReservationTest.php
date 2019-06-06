@@ -15,7 +15,7 @@ use Tests\TestCase;
 
 class ReservationTest extends TestCase
 {
-	use DatabaseMigrations;
+    use DatabaseMigrations;
     
 
     /** @test */
@@ -23,51 +23,49 @@ class ReservationTest extends TestCase
     {
 
    //  	$concert = factory(Concert::class)->create([
-			// 'ticket_price' => 1200
-   //  	])->addTickets(10);
-   //  	$tickets = $concert->findTickets(3);
+        // 'ticket_price' => 1200
+        //  	])->addTickets(10);
+        //  	$tickets = $concert->findTickets(3);
 
-    	$tickets = collect([
-  			(object) ['price' => 1200],
-  			(object) ['price' => 1200],
-  			(object) ['price' => 1200],
-    	]);
+        $tickets = collect([
+            (object) ['price' => 1200],
+            (object) ['price' => 1200],
+            (object) ['price' => 1200],
+        ]);
 
-    	$res = new Reservation($tickets, 'tok@mail.com');
+        $res = new Reservation($tickets, 'tok@mail.com');
 
 
-    	$this->assertEquals(3600, $res->totalCost());
+        $this->assertEquals(3600, $res->totalCost());
     }
 
-     /** @test */
+    /** @test */
     public function retraivng_the_reserved_tickets()
     {
 
    //   $concert = factory(Concert::class)->create([
-      // 'ticket_price' => 1200
-   //   ])->addTickets(10);
-   //   $tickets = $concert->findTickets(3);
+        // 'ticket_price' => 1200
+        //   ])->addTickets(10);
+        //   $tickets = $concert->findTickets(3);
 
-      $tickets = collect([
+        $tickets = collect([
       (object) ['price' => 1200],
       (object) ['price' => 1200],
       (object) ['price' => 1200],
       ]);
 
-      $res = new Reservation($tickets, 'tok@mail.com');
+        $res = new Reservation($tickets, 'tok@mail.com');
 
 
-      $this->assertEquals($tickets, $res->tickets());
+        $this->assertEquals($tickets, $res->tickets());
     }
 
-      /** @test */
+    /** @test */
     public function retraivng_the_reserved__customer_Email()
     {
+        $res = new Reservation([], 'tok@mail.com');
  
-      $res = new Reservation([], 'tok@mail.com');
- 
-      $this->assertEquals('tok@mail.com', $res->email());
-
+        $this->assertEquals('tok@mail.com', $res->email());
     }
 
 
@@ -87,23 +85,23 @@ class ReservationTest extends TestCase
         // $ticket3->shouldReceive('release')->once();
         // $tickets = collect([$ticket1, $ticket2, $ticket3]);
      
-      // VERSION TWO
+        // VERSION TWO
         $tickets = collect([
-          Mockery::mock(Ticket::class, function($mock){
-            $mock->shouldReceive('release')->once();
-          }), 
+          Mockery::mock(Ticket::class, function ($mock) {
+              $mock->shouldReceive('release')->once();
+          }),
           Mockery::mock(Ticket::class)->shouldReceive('release')->once()->getMock(),
           Mockery::mock(Ticket::class)->shouldReceive('release')->once()->getMock()
         ]);
 
-         $resevation = new Reservation($tickets, 'tok@mail.com');
+        $resevation = new Reservation($tickets, 'tok@mail.com');
 
         $resevation->cancel();
 
 
 
 
-//not works
+        //not works
       // VERSION THEEE
         //  $tickets = collect([
         //   Mockery::spy(Ticket::class),
@@ -117,7 +115,7 @@ class ReservationTest extends TestCase
 
         // $tickets->map(function($ticket){
         //   $ticket->shouldReceived('release');
-        // }); 
+        // });
     }
 
     /** @test */
@@ -125,7 +123,7 @@ class ReservationTest extends TestCase
     {
         $concert = factory(Concert::class)->create([ 'ticket_price' => 1200])->addTickets(3);
         $tickets =  $concert->tickets;
-        $reservation = new Reservation($tickets, 'tok@mail.com');    
+        $reservation = new Reservation($tickets, 'tok@mail.com');
         $pG = new FakePaymentGateway;
 
 
@@ -135,8 +133,5 @@ class ReservationTest extends TestCase
         $this->assertEquals(3, $order->ticketQuantity());
         $this->assertEquals(3600, $order->amount);
         $this->assertEquals(3600, $pG->totalCharges());
-
     }
-
-
 }
