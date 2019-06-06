@@ -111,7 +111,7 @@ class OrderTest extends TestCase
             'email' => 'jane@example',
             'amount' => 6000,
             'confirmation_number' => 'ORDERCONFIRMAI',
-            // 'ticket_quantity' => 3,
+            'ticket_quantity' => 3,
             'tickets' => [
                 ['code' => 'TICKETCODE1'],
                 ['code' => 'TICKETCODE2'],

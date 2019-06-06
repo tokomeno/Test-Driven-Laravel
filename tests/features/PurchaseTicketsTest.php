@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
+use App\Facades\TicketCode;
 
 class PurchaseTicketsTest extends TestCase
 {
@@ -42,6 +43,7 @@ class PurchaseTicketsTest extends TestCase
         // $this->app->instance(OrderConfirmationNumberGenerator::class,  $orderConfirmationNumberGenerator);
 
         OrderConfirmationNumber::shouldReceive('generate')->andReturn('ORDERCONFIRMAION1234');
+        TicketCode::shouldReceive('generateFor')->andReturn('TICKETCODE1', 'TICKETCODE2', 'TICKETCODE3');
         // Act
         // Purchase concert tickets
         $res = $this->orderTickets($concert, [

@@ -54,7 +54,7 @@ class Order extends Model
             'confirmation_number' => $this->confirmation_number,
             'email' => $this->email,
             'amount' => $this->amount,
-            // 'ticket_quantity' => $this->ticketQuantity(),
+            'ticket_quantity' => $this->ticketQuantity(),
             'tickets' => $this->tickets->map(function($ticket){
                 return ['code' => $ticket->code];
             })->all()
