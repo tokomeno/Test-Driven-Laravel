@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Mail;
 use Mockery;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -16,6 +17,7 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         Mockery::getConfiguration()->allowMockingNonExistentMethods(false);
+        Mail::fake();
     }
 }
 

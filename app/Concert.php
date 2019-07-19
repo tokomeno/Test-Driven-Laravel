@@ -81,6 +81,11 @@ class Concert extends Model
             $ticket->update(['reserved_at' => null]);
         });
     }
+
+    public function ordersFor($customerEmail)
+    {
+        return $this->orders()->where('email', $customerEmail)->get();
+    }
     
 
     //  public function orderTickets($email, $t_q){

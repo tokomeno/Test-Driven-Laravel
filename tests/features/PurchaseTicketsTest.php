@@ -2,16 +2,18 @@
 
 
 // use Mockery;
-use App\Billing\FakePaymentGateway;
-use App\Billing\PaymentGateway;
 use App\Concert;
-use App\Facades\OrderConfirmationNumber;
-use App\OrderConfirmationNumberGenerator;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 use App\Facades\TicketCode;
+use App\Billing\PaymentGateway;
+use App\Billing\FakePaymentGateway;
+use App\Mail\OrderConfirmationEmail;
+use Illuminate\Support\Facades\Mail;
+use App\Facades\OrderConfirmationNumber;
+use App\OrderConfirmationNumberGenerator;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class PurchaseTicketsTest extends TestCase
 {
@@ -34,6 +36,7 @@ class PurchaseTicketsTest extends TestCase
     public function customer_can_purchase_published_concert_tickets()
     {
         $this->withoutExceptionHandling();
+     
         // Create a concert
         $concert = factory(Concert::class)->state('published')->create(['ticket_price' => 3250])->addTickets(3);
         
@@ -74,6 +77,14 @@ class PurchaseTicketsTest extends TestCase
         $order = $concert->orders()->where('email', 'john@example.com')->first();
         $this->assertNotNull($order);
         $this->assertEquals(3, $order->tickets()->count());
+
+
+        $order = $concert->ordersFor('john@example.com')->first();
+        $this->assertEquals(3, $order->ticketQuantity());
+        Mail::assertSent(OrderConfirmationEmail::class, function ($mail) use ($order) {
+            return $mail->hasTo('john@example.com')
+                && $mail->order->id == $order->id;
+        });
     }
 
     /** @test */
