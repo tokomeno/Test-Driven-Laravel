@@ -1,5 +1,5 @@
 <?php
-
+namespace Tests\Feature;
 
 // use Mockery;
 use App\Concert;
@@ -25,6 +25,7 @@ class PurchaseTicketsTest extends TestCase
 
         $this->paymentGateway = new FakePaymentGateway();
         app()->instance(PaymentGateway::class, $this->paymentGateway);
+        Mail::fake();
     }
 
     private function orderTickets($concert, $params)
