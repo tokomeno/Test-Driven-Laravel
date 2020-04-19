@@ -53,6 +53,10 @@ class Concert extends Model
     {
         return $query->whereNotNull('published_at');
     }
+    public function scopeNotPublished($query)
+    {
+        return $query->whereNull('published_at');
+    }
 
     public function getFormattedDateAttribute()
     {

@@ -9,6 +9,17 @@ use Carbon\Carbon;
 
 class ConcertsController extends Controller
 {
+
+    public function index()
+    {
+
+        return view('backstage.concerts.index', [
+            'publishedConcerts' => auth()->user()->concerts()->published()->get(),
+            'unpublishedConcerts' => auth()->user()->concerts()->notPublished()->get(),
+        ]);
+    }
+
+
     public function create()
     {
         return view('backstage.concerts.create');

@@ -1,4 +1,4 @@
-@extends('layouts.backstage')
+{{-- @extends('layouts.backstage')
 
 @section('backstageContent')
 <div class="bg-light p-xs-y-4 border-b">
@@ -6,8 +6,8 @@
         <div class="flex-spaced flex-y-center">
             <h1 class="text-lg">Your concerts</h1>
             <a href="{{ route('backstage.concerts.new') }}" class="btn btn-primary">Add concert</a>
-        </div>
-    </div>
+</div>
+</div>
 </div>
 <div class="bg-soft p-xs-y-5">
     <div class="container m-xs-b-4">
@@ -33,8 +33,10 @@
                                 </p>
                             </div>
                             <div>
-                                <a href="{{ route('backstage.published-concert-orders.index', $concert) }}" class="btn btn-sm btn-secondary m-xs-r-2">Manage</a>
-                                <a href="{{ route('concerts.show', $concert) }}" class="link-brand text-sm wt-medium">Public Link</a>
+                                <a href="{{ route('backstage.published-concert-orders.index', $concert) }}"
+                                    class="btn btn-sm btn-secondary m-xs-r-2">Manage</a>
+                                <a href="{{ route('concerts.show', $concert) }}"
+                                    class="link-brand text-sm wt-medium">Public Link</a>
                             </div>
                         </div>
                     </div>
@@ -64,8 +66,10 @@
                                 </p>
                             </div>
                             <div>
-                                <a href="{{ route('backstage.concerts.edit', $concert) }}" class="btn btn-sm btn-secondary m-xs-r-2">Edit</a>
-                                <form class="inline-block" action="{{ route('backstage.published-concerts.store') }}" method="POST">
+                                <a href="{{ route('backstage.concerts.edit', $concert) }}"
+                                    class="btn btn-sm btn-secondary m-xs-r-2">Edit</a>
+                                <form class="inline-block" action="{{ route('backstage.published-concerts.store') }}"
+                                    method="POST">
                                     {{ csrf_field() }}
                                     <input type="hidden" name="concert_id" value="{{ $concert->id }}">
                                     <button type="submit" class="btn btn-sm btn-primary">Publish</button>
@@ -79,4 +83,4 @@
         </div>
     </div>
 </div>
-@endsection
+@endsection --}}
