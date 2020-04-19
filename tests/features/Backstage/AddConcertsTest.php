@@ -62,7 +62,7 @@ class AddConcertsTest extends TestCase
             // $response->assertRedirect('/backstage/concerts');
             $response->assertRedirect(route('concerts.show', $concert));
 
-            // $this->assertTrue($concert->user->is($user));
+            $this->assertTrue($concert->user->is($user));
 
             // $this->assertFalse($concert->isPublished());
             $this->assertEquals('No Warning', $concert->title);

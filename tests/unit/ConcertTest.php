@@ -74,10 +74,10 @@ class ConcertTest extends TestCase
         $concert = factory(Concert::class)->create();
 
         $concert->tickets()->saveMany(
-            factory('App\Ticket', 30)->create(['order_id'=>1])
+            factory('App\Ticket', 30)->create(['order_id' => 1])
         );
         $concert->tickets()->saveMany(
-               factory('App\Ticket', 20)->create(['order_id'=>null])
+            factory('App\Ticket', 20)->create(['order_id' => null])
         );
 
         //act
@@ -127,13 +127,13 @@ class ConcertTest extends TestCase
         $this->assertEquals(3, $concert->ticketsRemaining());
 
         $reservation = $concert->reserveTickets(2, 'tok@mail.com');
-        
+
         $this->assertCount(2, $reservation->tickets());
         $this->assertEquals('tok@mail.com', $reservation->email());
 
         $this->assertEquals(1, $concert->ticketsRemaining());
     }
-      
+
     /** @test */
     public function cannot_reserve_tickets_which_was_already_purchased()
     {

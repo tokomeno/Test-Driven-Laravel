@@ -1,5 +1,6 @@
 <?php
 
+use App\User;
 use Carbon\Carbon;
 
 /*
@@ -37,6 +38,9 @@ $factory->define(App\Concert::class, function (Faker\Generator $faker) {
         'state' => 'ON',
         'zip' => '90210',
         'additional_information' => 'Some sample additional information.',
+        'user_id' => function () {
+            return factory(User::class)->create()->id;
+        }
     ];
 });
 
@@ -55,7 +59,7 @@ $factory->state(App\Concert::class, 'unpublished', function ($faker) {
 
 $factory->define(App\Ticket::class, function (Faker\Generator $faker) {
     return [
-        'concert_id' => function(){
+        'concert_id' => function () {
             return factory(App\Concert::class)->create()->id;
         }
     ];

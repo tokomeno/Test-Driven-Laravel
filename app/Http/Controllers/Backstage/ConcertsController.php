@@ -16,8 +16,12 @@ class ConcertsController extends Controller
 
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'title' => 'required',
+        ]);
+
         /** @var Concert $concert */
-        $concert = Concert::create([
+        $concert = auth()->user()->concerts()->create([
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'date' =>  Carbon::parse(vsprintf('%s %s', [
