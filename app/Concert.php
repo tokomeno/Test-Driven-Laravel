@@ -5,6 +5,7 @@ namespace App;
 use App\Exceptions\NotEnoughTicketsException;
 use App\Reservation;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Concert
@@ -36,6 +37,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Concert query()
  * @mixin \Eloquent
  */
+
 class Concert extends Model
 {
     protected $guarded = [];
@@ -129,7 +131,16 @@ class Concert extends Model
         return $this->orders()->where('email', $customerEmail)->get();
     }
 
+    public function isPublished()
+    {
+        return !!$this->published_at;
+    }
 
+    public function publish()
+    {
+        $this->update(['published_at' => Carbon::now()]);
+        return $this;
+    }
 
     //  public function orderTickets($email, $t_q){
 
