@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('mockups/order', function(){
+Route::get('mockups/order', function () {
 	return view('orders.show');
 });
 
@@ -22,4 +22,12 @@ Route::get('/orders/{confirmationNumber}', 'OrderController@show');
 
 Auth::routes();
 
+
 Route::post('/login', 'Auth\LoginController@login');
+Route::post('/loginout', 'Auth\LoginController@logout')->name('auth.logout');
+
+
+Route::group(['middleware' => 'auth'], function () {
+	Route::get("/backstage/concerts/new", 'Backstage\ConcertsController@create');
+	Route::get("/backstage/concerts", 'Backstage\ConcertsController@index')->name('backstage.concerts.index');
+});
