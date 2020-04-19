@@ -6,6 +6,24 @@ use App\Concert;
 use App\Facades\OrderConfirmationNumber;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Order
+ *
+ * @property int $id
+ * @property string $email
+ * @property int $amount
+ * @property string $confirmation_number
+ * @property string $card_last_four
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Concert $concert
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Ticket[] $tickets
+ * @property-read int|null $tickets_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Order query()
+ * @mixin \Eloquent
+ */
 class Order extends Model
 {
     protected $guarded = [];
