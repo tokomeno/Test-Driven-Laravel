@@ -15,7 +15,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 class TicketTest extends TestCase
 {
     use DatabaseMigrations;
-    
+
     /** @test */
     public function a_ticket_can_be_reserved()
     {
@@ -23,7 +23,7 @@ class TicketTest extends TestCase
         $this->assertNull($ticket->fresh()->reserved_at);
 
         $ticket->reserve();
-        
+
         $this->assertNotNull($ticket->fresh()->reserved_at);
     }
 
@@ -38,7 +38,7 @@ class TicketTest extends TestCase
         //   	$this->assertEquals($order->id, $ticket->order_id);
 
         //   	$ticket->release();
-        
+
         // $this->assertNull($ticket->fresh()->order_id);
 
 
@@ -58,9 +58,9 @@ class TicketTest extends TestCase
         $ticket = factory(Ticket::class)->create();
 
         TicketCode::shouldReceive('generateFor')->with($ticket)->andReturn('TICKETCDE1');
-        
+
         $this->assertNull($ticket->code);
-        
+
         $ticket->claimFor($order);
 
         // $this->assertEquals($order->id, $ticket->order_id);

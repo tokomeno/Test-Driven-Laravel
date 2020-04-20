@@ -76,12 +76,26 @@ class Concert extends Model
         return number_format($this->ticket_price / 100, 2);
     }
 
+    public function totalTickets()
+    {
+        return $this->tickets()->count();
+    }
 
+    public function percentSoldOut()
+    {
+        return number_format(($this->ticketsSold() / $this->totalTickets()) * 100, 2);
+    }
+
+    public function revenueInDollars()
+    {
+        return $this->orders()->sum('amount') / 100;
+    }
 
     public function orders()
     {
+        return Order::whereIn('id', $this->tickets()->pluck('order_id'));
         // return $this->hasMany(Order::class);
-        return $this->belongsToMany(Order::class, 'tickets');
+        // return $this->belongsToMany(Order::class, 'tickets');
     }
 
     public function tickets()

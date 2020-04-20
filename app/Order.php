@@ -27,15 +27,16 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $guarded = [];
-    
-    public static function findByConfirmationNumber($orderConfirmation){
+
+    public static function findByConfirmationNumber($orderConfirmation)
+    {
         return self::where('confirmation_number', $orderConfirmation)->firstOrFail();
     }
 
     public static function forTickets($tickets, $email,  $charge)
     {
         // dd($charge);
-        $order = self::create([ 
+        $order = self::create([
             'confirmation_number' => OrderConfirmationNumber::generate(),
             'email' => $email,
             'amount' => $charge->amount(),
@@ -48,39 +49,41 @@ class Order extends Model
         // }
         $tickets->each->claimFor($order);
 
-        return $order;    
+        return $order;
     }
 
 
 
     public function tickets()
     {
-    	return $this->hasMany(Ticket::class);
+        return $this->hasMany(Ticket::class);
     }
 
-    public function ticketQuantity(){
-    	return $this->tickets()->count();
+    public function ticketQuantity()
+    {
+        return $this->tickets()->count();
     }
 
     public function concert()
     {
-    	return $this->belongsTo(Concert::class);
+        return $this->belongsTo(Concert::class);
     }
-	
-    public function toArray(){
+
+    public function toArray()
+    {
         return [
             'confirmation_number' => $this->confirmation_number,
             'email' => $this->email,
             'amount' => $this->amount,
             'ticket_quantity' => $this->ticketQuantity(),
-            'tickets' => $this->tickets->map(function($ticket){
+            'tickets' => $this->tickets->map(function ($ticket) {
                 return ['code' => $ticket->code];
             })->all()
         ];
     }
 
-    
-        
+
+
     // not using anymore
 
     // public static function fromReservation($reservation){
@@ -90,7 +93,7 @@ class Order extends Model
     //     ]);
 
     //     $order->tickets()->saveMany($reservation->tickets());
-    
+
     //     return $order;   
     // }
 
