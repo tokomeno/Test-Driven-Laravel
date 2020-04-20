@@ -7,7 +7,6 @@ use App\Reservation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
-
 /**
  * App\Concert
  *
@@ -146,6 +145,11 @@ class Concert extends Model
         $this->update(['published_at' => Carbon::now()]);
         $this->addTickets($this->ticket_quantity);
         return $this;
+    }
+
+    public function ticketsSold()
+    {
+        return $this->tickets()->sold()->count();
     }
 
     //  public function orderTickets($email, $t_q){

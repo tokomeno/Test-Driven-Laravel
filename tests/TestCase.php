@@ -8,6 +8,7 @@ use Tests\CreatesApplication;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Webmozart\Assert\Assert;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -20,6 +21,11 @@ abstract class TestCase extends BaseTestCase
 
         TestResponse::macro('data', function ($key) {
             return $this->original->getData()[$key];
+        });
+
+
+        TestResponse::macro('assertViewIs', function ($name) {
+            Assert::assertEqauls($name, $this->original->name());
         });
 
         Mockery::getConfiguration()->allowMockingNonExistentMethods(false);

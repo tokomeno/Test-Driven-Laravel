@@ -69,22 +69,37 @@ class ConcertTest extends TestCase
 
 
     /** @test */
-    public function tickets_reamingn_does_not_include_ticket_asoc_to_order()
+    public function tickets_reamening_does_not_include_ticket_asoc_to_order()
     {
         $concert = factory(Concert::class)->create();
 
         $concert->tickets()->saveMany(
-            factory('App\Ticket', 30)->create(['order_id' => 1])
+            factory('App\Ticket', 3)->create(['order_id' => 1])
         );
         $concert->tickets()->saveMany(
-            factory('App\Ticket', 20)->create(['order_id' => null])
+            factory('App\Ticket', 2)->create(['order_id' => null])
         );
 
         //act
-        $this->assertEquals(20, $concert->ticketsRemaining());
+        $this->assertEquals(2, $concert->ticketsRemaining());
     }
 
-    //   /** @test */
+    /** @test */
+    public function ticket_sold_only_inlcudes_assosication_with_an_order()
+    {
+        $concert = factory(Concert::class)->create();
+
+        $concert->tickets()->saveMany(
+            factory('App\Ticket', 3)->create(['order_id' => 1])
+        );
+        $concert->tickets()->saveMany(
+            factory('App\Ticket', 2)->create(['order_id' => null])
+        );
+
+        $this->assertEquals(3, $concert->ticketsSold());
+    }
+
+    /** @test */
     public function tring_to_reserve_more_tickets_than_remain_throws_an_excaption()
     {
         $concert = factory(Concert::class)->create()->addTickets(10);
