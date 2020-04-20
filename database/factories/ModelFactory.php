@@ -37,6 +37,7 @@ $factory->define(App\Concert::class, function (Faker\Generator $faker) {
         'city' => 'Fakeville',
         'state' => 'ON',
         'zip' => '90210',
+        'ticket_quantity' => 5,
         'additional_information' => 'Some sample additional information.',
         'user_id' => function () {
             return factory(User::class)->create()->id;

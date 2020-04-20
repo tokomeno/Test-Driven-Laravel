@@ -19,7 +19,7 @@ class CreateConcertsTable extends Migration
 
 
             $table->unsignedInteger('user_id');
-
+            $table->integer('ticket_quantity');
 
             $table->string('subtitle')->nullable();
             $table->datetime('date');

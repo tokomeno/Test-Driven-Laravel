@@ -73,10 +73,7 @@ class Concert extends Model
         return number_format($this->ticket_price / 100, 2);
     }
 
-    public function getTicketQuantityAttribute()
-    {
-        return $this->tickets()->count();
-    }
+
 
     public function orders()
     {

@@ -12,11 +12,11 @@ class PromoterLoginTest extends TestCase
     use DatabaseMigrations;
 
 
-    /** @test */
-    public function showing_the_login_form()
-    {
-        $response = $this->get("/login");
-    }
+    // /** @test */
+    // public function showing_the_login_form()
+    // {
+    //     $response = $this->get("/login");
+    // }
 
 
     /** @test */

@@ -17,11 +17,8 @@ class ViewConcertListTest extends TestCase
 
     protected function setUp()
     {
-        parent::setUp();
-        TestResponse::macro('data', function ($key) {
-            return $this->original->getData()[$key];
-        });
 
+        parent::setUp();
         Collection::macro('assertEquals', function ($data) {
             dd($this->toArray(), collect($data)->toArray());
             //    $this->assertEquals($data, $this->data->);

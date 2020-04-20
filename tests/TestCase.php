@@ -6,6 +6,7 @@ use Mail;
 use Mockery;
 use Tests\CreatesApplication;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -16,6 +17,10 @@ abstract class TestCase extends BaseTestCase
     protected function setUp()
     {
         parent::setUp();
+
+        TestResponse::macro('data', function ($key) {
+            return $this->original->getData()[$key];
+        });
 
         Mockery::getConfiguration()->allowMockingNonExistentMethods(false);
         Mail::fake();
