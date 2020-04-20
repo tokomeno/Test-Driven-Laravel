@@ -175,11 +175,15 @@ class ConcertTest extends TestCase
     /** @test */
     public function concerts_can_be_published()
     {
-        $concert = factory(Concert::class)->create(['published_at' => null]);
+        /** @var Concert $concert  */
+        $concert = factory(Concert::class)->create(['published_at' => null, 'ticket_quantity' => 5]);
 
         $this->assertFalse($concert->isPublished());
+
+
         $concert->publish();
 
         $this->assertTrue($concert->isPublished());
+        $this->assertEquals($concert->ticketsRemaining(), 5);
     }
 }

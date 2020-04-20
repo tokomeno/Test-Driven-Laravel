@@ -7,12 +7,15 @@ use App\Reservation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
+
 /**
  * App\Concert
  *
  * @property int $id
  * @property string $title
- * @property string $subtitle
+ * @property int $user_id
+ * @property int $ticket_quantity
+ * @property string|null $subtitle
  * @property \Illuminate\Support\Carbon $date
  * @property int $ticket_price
  * @property string $venue
@@ -31,13 +34,14 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $orders_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Ticket[] $tickets
  * @property-read int|null $tickets_count
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Concert newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Concert newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Concert notPublished()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Concert published()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Concert query()
  * @mixin \Eloquent
  */
-
 class Concert extends Model
 {
     protected $guarded = [];
@@ -140,6 +144,7 @@ class Concert extends Model
     public function publish()
     {
         $this->update(['published_at' => Carbon::now()]);
+        $this->addTickets($this->ticket_quantity);
         return $this;
     }
 
